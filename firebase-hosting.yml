@@ -1,0 +1,35 @@
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches:
+      - main # Or the branch you deploy from, like 'master'
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Optional: If you need to build your game (e.g., with a build tool like webpack/parcel or compile TypeScript)
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: '14' # Or your preferred Node.js version
+    # - name: Install dependencies
+    #   run: npm ci # Or npm install if you don't have a lock file
+    # - name: Build game
+    #   run: npm run build # Or the command to build your game
+
+    - name: Deploy to Firebase Hosting
+      uses: FirebaseExtended/action-hosting-deploy@v0
+      with:
+        repoToken: '${{ secrets.GITHUB_TOKEN }}'
+        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' # <-- This is where you use your secret!
+        projectId: netrunner-31ef2 # Your Firebase Project ID
+        channelId: live # Or 'preview' if you want to deploy to a preview channel
+        # Set entryPoint if your firebase.json is NOT in the repository root
+        # entryPoint: ./path/to/your/firebase-project
+
