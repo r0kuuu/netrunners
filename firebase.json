@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "r0kuuu/netrunners",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

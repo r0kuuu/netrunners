@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetRunner's Edge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="cyber-background"></div>
+    <div id="loginScreen" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">Welcome to NetRunner's Edge</h2>
+            <div id="usernameSelection">
+                <p class="mb-2 text-left">Enter your Runner ID:</p>
+                <input type="text" id="usernameInput" class="cyber-input w-full mb-4" autocomplete="off">
+                <button id="submitUsername" class="cyber-button primary w-full">Next</button>
+            </div>
+
+            <div id="raceSelection" class="hidden mt-6">
+                <h3 class="text-xl mb-4">Choose Your Origin:</h3>
+                <div id="raceOptionsContainer" class="grid-2-col md:grid-cols-2 gap-4 max-h-60 overflow-y-auto p-2">
+                </div>
+                <p id="raceDescription" class="mt-4 mb-4 p-2 border border-dashed border-cyan-700 rounded min-h-[50px] text-sm text-gray-400"></p>
+                <button id="confirmRace" class="cyber-button primary w-full mt-4" disabled>Enter the Grid</button>
+            </div>
+            <p id="authStatus" class="text-xs mt-4 text-gray-500">Initializing connection to the Grid...</p>
+            <p id="userIdDisplay" class="text-xs mt-1 text-gray-600"></p>
+        </div>
+    </div>
+
+    <div id="gameInterface" class="game-container hidden">
+        <header class="game-header">
+            <h1>NetRunner's Edge</h1>
+            <div class="player-quick-info">
+                <span id="playerNameDisplay"></span>
+                <span id="playerLevelDisplay"></span>
+                <span id="playerRankDisplay"></span>
+                <span id="playerCurrencyDisplay"></span>
+            </div>
+        </header>
+
+        <nav class="tab-nav">
+            <button class="tab-button active" data-tab="home">Home</button>
+            <button class="tab-button" data-tab="chat">Chat</button>
+            <button class="tab-button" data-tab="profile">Profile</button>
+            <button class="tab-button" data-tab="market">Market</button>
+            <button class="tab-button" data-tab="guilds">Guilds</button>
+            <button class="tab-button" data-tab="missions">Missions</button>
+            <button class="tab-button" data-tab="pvp">PvP</button>
+            <button class="tab-button" data-tab="tech-times">The Tech Times</button>
+            <button class="tab-button" data-tab="sportsbook">Sportsbook</button>
+        </nav>
+
+        <main class="flex-grow overflow-hidden">
+            <div id="homeTab" class="tab-content active">
+                <h2 class="text-2xl font-bold mb-4">System Status</h2>
+                <p>Welcome back, <span id="homePlayerName">Netrunner</span>.</p>
+                <p>Current objective: Establish your presence in Night City.</p>
+                <div class="mt-6 p-4 border border-cyan-600 rounded-lg bg-black/20">
+                    <h3 class="text-xl text-cyan-400 mb-2">Recent Activity Feed (Tech Times Highlights):</h3>
+                    <ul id="techTimesHighlights" class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li>No significant network ripples detected. Grid is stable.</li>
+                    </ul>
+                </div>
+                <div class="mt-6 p-4 border border-cyan-600 rounded-lg bg-black/20">
+                    <h3 class="text-xl text-cyan-400 mb-2">Player Snapshot:</h3>
+                    <p>UID: <span id="playerUIDInfo" class="text-gray-400"></span></p>
+                    <p>Level: <span id="playerLevelInfo" class="text-green-400"></span> (<span id="playerRankInfo" class="text-yellow-400"></span>)</p>
+                    <p>Credits: <span id="playerCreditsInfo" class="text-blue-400"></span> €$</p>
+                </div>
+            </div>
+
+            <div id="chatTab" class="tab-content">
+                <div class="mb-2">
+                    <label for="chatChannelSelect" class="mr-2 text-sm">Channel:</label>
+                    <select id="chatChannelSelect" class="cyber-input bg-gray-800 text-sm">
+                        <option value="world">World</option>
+                        <option value="guild">Guild (Not Implemented)</option>
+                        <option value="japanese">日本語 (Japanese)</option>
+                        <option value="french">Français (French)</option>
+                        <option value="ai-assistant">AI Assistant (Gemini)</option>
+                    </select>
+                </div>
+                <div id="chatDisplay" class="flex-grow">
+                </div>
+                <div class="mt-2 flex">
+                    <input type="text" id="chatInput" class="cyber-input flex-grow mr-2" placeholder="Type your message...">
+                    <button id="sendChatMessage" class="cyber-button primary">Send</button>
+                </div>
+            </div>
+
+            <div id="profileTab" class="tab-content">
+                <h2 class="text-2xl font-bold mb-4">User Profile: <span id="profileName"></span></h2>
+                <div class="grid-2-col">
+                    <div>
+                        <h3 class="text-xl text-cyan-400 mb-2">Identity:</h3>
+                        <p>Race: <span id="profileRace" class="text-gray-300"></span></p>
+                        <p>Level: <span id="profileLevel" class="text-gray-300"></span></p>
+                        <p>Rank: <span id="profileRank" class="text-gray-300"></span></p>
+                        <p>Experience: <span id="profileXP" class="text-gray-300"></span> / <span id="profileXPToNext" class="text-gray-300"></span></p>
+                        <p>User ID: <span id="profileUID" class="text-xs text-gray-500"></span></p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl text-cyan-400 mb-2">Core Attributes:</h3>
+                        <p>Strength: <span id="statStr" class="text-red-400"></span></p>
+                        <p>Speed: <span id="statSpd" class="text-green-400"></span></p>
+                        <p>Constitution: <span id="statCon" class="text-blue-400"></span></p>
+                        <p>Cybernetics: <span id="statCyber" class="text-purple-400"></span></p>
+                        <p>Luck: <span id="statLuck" class="text-yellow-400"></span></p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <h3 class="text-xl text-cyan-400 mb-2">Inventory & Equipment (Not Implemented)</h3>
+                    <p class="text-gray-500">Your gear and loot will appear here.</p>
+                </div>
+            </div>
+
+            <div id="marketTab" class="tab-content">
+                <h2 class="text-2xl font-bold mb-4">Night City Markets</h2>
+                <div class="flex mb-4">
+                    <button id="showRegularMarket" class="cyber-button mr-2 active">Standard Exchange</button>
+                    <button id="showBlackMarket" class="cyber-button">Black Market</button>
+                </div>
+                <div id="regularMarketContent">
+                    <h3 class="text-xl text-cyan-400 mb-2">Standard Exchange Listings</h3>
+                    <p class="text-gray-500">Buy and sell goods legally. (Market functionality not yet implemented).</p>
+                </div>
+                <div id="blackMarketContent" class="hidden">
+                    <h3 class="text-xl text-red-500 mb-2">Black Market Deals</h3>
+                    <p class="text-gray-500">High-risk, high-reward. Eyes open, choom. (Black Market functionality not yet implemented).</p>
+                </div>
+            </div>
+
+            <div id="guildsTab" class="tab-content">
+                <h2 class="text-2xl font-bold mb-4">Guild Network</h2>
+                <p class="text-gray-500">Guild creation, management, and warfare systems are under development.</p>
+            </div>
+
+            <div id="missionsTab" class="tab-content">
+                <h2 class="text-2xl font-bold mb-4">Contracts & Missions</h2>
+                <p class="text-gray-500">Fixers will post jobs here. Check back for opportunities. (Mission system not yet implemented).</p>
+            </div>
+
+            <div id="pvpTab" class="tab-content">
+                <h2 class="text-2xl font-bold mb-4">Combat Zone (PvP)</h2>
+                <p class="text-gray-500">Test your might against other Netrunners. (PvP combat system not yet implemented).</p>
+            </div>
+
+            <div id="tech-timesTab" class="tab-content">
+                <h2 class="text-2xl font-bold mb-4">The Tech Times - Night City's Pulse</h2>
+                <p class="text-gray-500">Aggregated news from the Grid. Player actions, corporate espionage, and street justice reported here. (Real-time feed not yet implemented).</p>
+                <ul id="fullTechTimesFeed" class="list-disc list-inside text-sm text-gray-300 space-y-1 mt-4">
+                    <li>No significant network ripples detected. Grid is stable.</li>
+                </ul>
+            </div>
+            <div id="sportsbookTab" class="tab-content">
+                <h2 class="text-2xl font-bold mb-4">Night City Sportsbook</h2>
+                <p class="text-gray-500">Place your bets on real-world (simulated) sports events. All bets are final. (Sports betting functionality not yet implemented).</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/firebase@9.22.1/firebase-app.js"></script>
+    <script src="https://unpkg.com/firebase@9.22.1/firebase-auth.js"></script>
+    <script src="https://unpkg.com/firebase@9.22.1/firebase-firestore.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
